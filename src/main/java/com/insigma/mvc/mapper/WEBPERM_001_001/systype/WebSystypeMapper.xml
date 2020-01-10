@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.insigma.mvc.dao.WEBPERM_001_001.systype.WebSystypeMapper">
+    <!-- 列表查询 -->
+	<select id="getList" resultType="SSysType">
+	 select 
+	       systypeid,
+	       systypecode,
+	       sysname,
+	       sysdesc,
+	       sysurl
+     from s_systype
+	</select>
+	
+	<!-- 分页查询 -->
+	<select id="getPageList"  parameterType="SSysType" resultType="SSysType">
+	 select 
+	       systypeid,
+	       systypecode,
+	       sysname,
+	       sysdesc,
+	       sysurl
+     from s_systype
+	</select>
+	
+	<!-- 通过参数id获取参数信息 -->
+	<select id="getSystypeByid"  parameterType="String" resultType="SSysType">
+	 select 
+	       systypeid,
+	       systypecode,
+	       sysname,
+	       sysdesc,
+	       sysurl
+     from s_systype where systypeid=#{systypeid}
+	</select>
+	
+	<!-- 新增参数 -->
+	<insert id="addSystype" parameterType="SSysType" >
+	   insert into s_systype(
+	       systypeid,
+	       systypecode,
+	       sysname,
+	       sysdesc,
+	       sysurl
+	   )
+	   values (
+	       #{systypeid},
+	       #{systypecode},
+	       #{sysname},
+	       #{sysdesc},
+	       #{sysurl}
+	   )
+	</insert>
+	
+	<!-- 更新参数信息 -->
+	<update id="updateSystype" parameterType="SSysType" >
+	     update  
+	        s_systype
+	     set 
+	       systypecode=#{systypecode},
+	       sysname=#{sysname},
+	       sysdesc=#{sysdesc},
+	       sysurl=#{sysurl}
+	     where systypeid=#{systypeid}
+	</update>
+
+    <!-- 通过参数id删除参数信息 -->	
+	<delete id="deleteSystypebyId" parameterType="String">
+	     delete from s_systype where SYSTYPEID=#{SYSTYPEID}
+	</delete>
+</mapper>

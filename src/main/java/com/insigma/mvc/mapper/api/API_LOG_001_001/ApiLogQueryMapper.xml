@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.insigma.mvc.dao.api.API_LOG_001_001.ApiLogQueryMapper">
+	<!-- 查询日志列表 -->
+	<select id="queryLogList" parameterType="SLog" resultType="SLog">
+	    select t.logid, to_char(logtime,'yyyy-MM-dd HH:mm:ss') logtime_string,t.cost,t.usergent,t.url,t.userid,t.method  from s_log  t order by logtime desc 
+	</select>
+	
+	<!-- 通过日志编号查询日志详情 -->
+	<select id="queryLogById" parameterType="String" resultType="SLog">
+		select 
+			t.logid, 
+			to_char(logtime,'yyyy-MM-dd HH:mm:ss') logtime_string,
+			t.cost,t.usergent,
+			t.url,
+			t.userid,
+			t.method,
+			t.cookie,
+			t.queryparam,
+			t.message,
+			t.exceptiontype,
+			t.stackmsg
+		from s_log  t where t.logid=#{logid}
+	</select>
+	
+	<!-- 查询应用异常日志记录 -->
+	<select id="queryErrorLogList" parameterType="SErrorLog" resultType="SErrorLog">
+		select 
+			t.logid,
+			to_char(logtime,'yyyy-MM-dd HH:mm:ss') logtime_string,
+			t.message,
+			t.usergent,
+			t.url,
+		    t.exceptiontype 
+		from s_errorlog  t 
+		order by logtime desc 
+	</select>
+
+	<select id="queryAppLogList" parameterType="SAppLog" resultType="SAppLog">
+		select
+			t.logid,to_char(logtime,'yyyy-MM-dd HH:mm:ss') logtime_string,
+			t.url,
+			(select a.channel_name from sys_api_channel a where a.channel_appkey=t.appkey) channel_name,
+			(select b.interface_name from sys_api_interface b where b.interface_id=t.interface_id) interface_name
+		 from S_APP_LOG t
+
+		<if test="appkey!=null">
+			and appkey =#{appkey}
+		</if>
+
+		<if test="interface_id!=null">
+			and interface_id =#{interface_id}
+		</if>
+		order by logtime desc
+	</select>
+
+	
+	
+	<!-- 通过日志编号查询日志详情 -->
+	<select id="queryErrorLogById" parameterType="String" resultType="SErrorLog">
+		select
+			t.logid,
+			to_char(logtime,'yyyy-MM-dd HH:mm:ss') logtime_string,
+			t.message,
+			t.usergent,
+			t.url,
+		    t.exceptiontype,
+		    t.stackmsg  
+		from s_errorlog  t where  t.logid=#{logid}
+	</select>
+
+	<!--querylogbyid2-->
+    <select id="queryLogById2" parameterType="String"  resultType="com.insigma.mvc.model.SLog">
+          SELECT
+          logid
+          from s_errorlog
+    </select>
+
+	<!-- 查询应用异常日志记录 -->
+	<select id="querySysErrorLogList" parameterType="SErrorLog" resultType="SErrorLog">
+		select
+		t.logid,
+		to_char(logtime,'yyyy-MM-dd HH:mm:ss') logtime_string,
+		t.message,
+		t.usergent,
+		t.url,
+		t.exceptiontype
+		from s_errorlog  t
+		order by logtime desc
+	</select>
+
+
+	<!-- 通过日志编号查询日志详情 -->
+	<select id="querySysErrorLogById" parameterType="String" resultType="SErrorLog">
+		select
+		t.logid,
+		to_char(logtime,'yyyy-MM-dd HH:mm:ss') logtime_string,
+		t.message,
+		t.usergent,
+		t.url,
+		t.exceptiontype,
+		t.stackmsg
+		from s_errorlog  t where  t.logid=#{logid}
+	</select>
+</mapper>

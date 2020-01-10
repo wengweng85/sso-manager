@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.insigma.mvc.dao.sercatalogue.SER_MGMT_001_002.SerCataloguePublishMapper" >
+    <!-- 得到代码类型树 -->
+	<select id="getCataTree" resultType="ServiceCatalogue" parameterType="String">
+		 <![CDATA[ 
+			select id,
+			  name,
+			  type,
+			  chlidnum,
+			  case when chlidnum>0 then 'true' else 'false'  end isparent,
+			  sort
+			  from (
+				select bus_type_id as id,bus_type_name as name ,'0' as parent_id, '1' type,(select count(*) from  ser_catalogue s where s.bus_type_id=ser1.bus_type_id) as chlidnum ,bus_type_sort sort   from ser_bus_type  ser1
+				union ALL
+				select cata_id  as id,cata_name as name,bus_type_id as parent_id, '2' type,(select count(*) from  ser_catalogue_detail s where s.cata_id=ser2.cata_id) as  chlidnum , cata_sort sort   from ser_catalogue   ser2
+				union ALL
+				select cata_detail_id as  id,cata_detail_name as name, cata_id as  parent_id , '3' type,0 chlidnum , cata_detail_sort  sort   from ser_catalogue_detail
+			  ) t where parent_id=#{id}  order by  type,sort
+        ]]> 	
+	</select>
+	
+	
+	<!-- 服务事项明细基本sql -->
+	<sql id="cata_detail_sql">
+	     select
+	        cata_detail_id,
+			cata_detail_code,
+			cata_id,
+			cata_detail_name,
+			cata_detail_pingyin,
+			cata_detail_desc,
+			cata_detail_sort,
+			cata_detail_bigimgtype,
+			cata_detail_smalltype,
+			userid,
+			groupid,
+			createtime,
+			edituserid,
+			editgroupid,
+			edittime,
+			status,
+			cata_detail_bigimg,
+			cata_detail_smallimg
+		from 
+		    ser_catalogue_detail
+	</sql>
+	
+	
+	<!-- 通过编号获取服务事项明细 -->
+	<select id="getCataDetailById" parameterType="String" resultType="ServiceCatalogueDetail">
+	   <include refid="cata_detail_sql"></include>
+	   where cata_detail_id=#{cata_detail_id}
+	</select>
+	
+	<!-- 新增事项类型配置 -->
+    <insert id="saveCataDetail" parameterType="ServiceCatalogueDetail">
+       <selectKey resultType="java.lang.String" order="BEFORE" keyProperty="cata_detail_id">
+		   select sys_guid() from dual
+        </selectKey>
+	      insert into ser_catalogue_detail(
+		        cata_detail_id,
+				cata_detail_code,
+				cata_id,
+				cata_detail_name,
+				cata_detail_pingyin,
+				cata_detail_desc,
+				cata_detail_sort,
+				cata_detail_bigimgtype,
+				cata_detail_smalltype,
+				userid,
+				groupid,
+				createtime,
+				edituserid,
+				editgroupid,
+				edittime,
+				status
+	      )
+	      values (
+	            #{cata_detail_id},
+				#{cata_detail_code},
+				#{cata_id},
+				#{cata_detail_name},
+				#{cata_detail_pingyin},
+				#{cata_detail_desc},
+				#{cata_detail_sort},
+				#{cata_detail_bigimgtype},
+				#{cata_detail_smalltype},
+				#{userid},
+				#{groupid},
+				#{createtime},
+				#{edituserid},
+				#{editgroupid},
+				sysdate,
+				'1'
+	      )
+  </insert>
+  
+  <!-- 更新事项类型 -->
+  <update id="updateCataDetail" parameterType="ServiceCatalogueDetail">
+        update ser_catalogue_detail t
+		  <set>
+	        t.edittime=sysdate,
+	        t.edituserid=#{edituserid},
+		    t.editgroupid=#{editgroupid},
+		    t.cata_detail_name=#{cata_detail_name},
+			t.cata_detail_desc=#{cata_detail_desc}
+	    </set>
+            where t.cata_detail_id=#{cata_detail_id}
+  </update>
+  
+  
+   <!-- 删除事项 -->
+  <delete id="deleteCataDetail" parameterType="String">
+        delete from ser_catalogue_detail where  cata_detail_id=#{cata_detail_id}
+  </delete>
+	
+	
+	<!-- 服务事项基本sql -->
+	<sql id="cata_sql">
+	select
+		cata_id,
+		cata_code,
+		cata_name,
+		cata_pingyin,
+		cata_desc,
+		cata_sort,
+		cata_bigimgtype,
+		cata_smalltype,
+		bus_type_id,
+		event_type_id,
+		consumer_type_id,
+		power_type_id,
+		department_id,
+		cata_hand_time_limit,
+		cata_promise_time_limit,
+		cata_complaint_tel,
+		cata_is_net,
+		cata_video_url,
+		cata_is_charge,
+		cata_establish,
+		cata_hand_term,
+		cata_app_material,
+		cata_process,
+		userid,
+		createtime,
+		groupid,
+		edituserid,
+		editgroupid,
+		edittime,
+		status,
+		cata_process_type,
+		cata_url,
+		cata_process_pic,
+		cata_bigimg,
+		cata_smallimg
+	from 
+        ser_catalogue
+	</sql>
+	
+	
+	<!-- 通过编号获取事项 -->
+	<select id="getCataById" parameterType="String" resultType="ServiceCatalogue">
+	   <include refid="cata_sql"></include>
+	   where cata_id=#{cata_id}
+	</select>
+	
+	
+	<!-- 新增事项类型配置 -->
+    <insert id="saveCata" parameterType="ServiceCatalogue">
+       <selectKey resultType="java.lang.String" order="BEFORE" keyProperty="cata_id"> 
+            select uuid()
+        </selectKey>
+	      insert into ser_catalogue(
+		        cata_id,
+				cata_code,
+				cata_name,
+				cata_pingyin,
+				cata_desc,
+				cata_sort,
+				bus_type_id,
+				event_type_id,
+				consumer_type_id,
+				power_type_id,
+				department_id,
+				cata_hand_time_limit,
+				cata_promise_time_limit,
+				cata_complaint_tel,
+				cata_is_net,
+				cata_video_url,
+				cata_is_charge,
+				cata_establish,
+				cata_hand_term,
+				cata_app_material,
+				cata_process,
+				userid,
+				createtime,
+				groupid,
+				status,
+				cata_process_type,
+				cata_url
+	      )
+	      values (
+	            #{cata_id},
+				#{cata_code},
+				#{cata_name},
+				#{cata_pingyin},
+				#{cata_desc},
+				#{cata_sort},
+				#{bus_type_id},
+				#{event_type_id},
+				#{consumer_type_id},
+				#{power_type_id},
+				#{department_id},
+				#{cata_hand_time_limit},
+				#{cata_promise_time_limit},
+				#{cata_complaint_tel},
+				#{cata_is_net},
+				#{cata_video_url},
+				#{cata_is_charge},
+				#{cata_establish},
+				#{cata_hand_term},
+				#{cata_app_material},
+				#{cata_process},
+				#{userid},
+				sysdate,
+				#{groupid},
+				'1',
+				#{cata_process_type},
+				#{cata_url}
+	      )
+  </insert>
+  
+  <!-- 更新事项类型 -->
+  <update id="updateCata" parameterType="ServiceCatalogue">
+        update ser_catalogue t
+		  <set>
+	        t.edittime=sysdate,
+	        t.edituserid=#{edituserid},
+		    t.editgroupid=#{editgroupid},
+		    t.cata_code=#{cata_code},
+		    t.cata_name=#{cata_name},
+			t.cata_pingyin=#{cata_pingyin},
+			t.cata_desc=#{cata_desc},
+			t.cata_sort=#{cata_sort},
+			t.bus_type_id=#{bus_type_id},
+			t.event_type_id=#{event_type_id},
+			t.consumer_type_id=#{consumer_type_id},
+			t.power_type_id=#{power_type_id},
+			t.department_id=#{department_id},
+			t.cata_hand_time_limit=#{cata_hand_time_limit},
+			t.cata_promise_time_limit=#{cata_promise_time_limit},
+			t.cata_complaint_tel=#{cata_complaint_tel},
+			t.cata_is_net=#{cata_is_net},
+			t.cata_video_url=#{cata_video_url},
+			t.cata_is_charge=#{cata_is_charge},
+			t.cata_establish=#{cata_establish},
+			t.cata_hand_term=#{cata_hand_term},
+			t.cata_app_material=#{cata_app_material},
+			t.cata_process=#{cata_process}
+	    </set>
+            where t.cata_id=#{cata_id}
+  </update>
+  
+  <!-- 删除事项 -->
+  <delete id="deleteCata" parameterType="String">
+        delete from ser_catalogue where cata_id=#{cata_id}
+  </delete>
+  
+</mapper>  

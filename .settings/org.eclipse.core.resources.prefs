@@ -1,0 +1,17 @@
+eclipse.preferences.version=1
+encoding//src/main/java=GBK
+encoding//src/main/java/com/insigma/common/constraint=UTF-8
+encoding//src/main/java/com/insigma/common/enums=UTF-8
+encoding//src/main/java/com/insigma/common/jpush/JpushClientUtil.java=UTF-8
+encoding//src/main/java/com/insigma/common/struct=UTF-8
+encoding//src/main/resources/config/app/app.properties=UTF-8
+encoding//src/main/webapp/WEB-INF/page/common/codevalue=UTF-8
+encoding//src/main/webapp/WEB-INF/page/index/admin_index.jsp=UTF-8
+encoding//src/main/webapp/WEB-INF/page/login/login.ftl=UTF-8
+encoding//src/main/webapp/WEB-INF/page/sysmanager/codevalue/ehcachedtest.ftl=UTF-8
+encoding//src/main/webapp/WEB-INF/templates/demo/thymeleaf.html=UTF-8
+encoding//src/main/webapp/resource/dtfx.html=utf-8
+encoding//src/main/webapp/resource/hplus/js=utf-8
+encoding//src/test/java=GBK
+encoding//target/wxjy-manager/resource/hplus/js/rc.all-2.0.js=UTF-8
+encoding/<project>=GBK

@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.insigma.mvc.dao.common.fileupload.FileLoadMapper">
+	<!-- 保存文件上传记录 -->
+	<insert id="saveFileRecord"  parameterType="SysFileRecord">
+		insert into sys_file_record(file_uuid,file_name,file_length,file_status,file_path,file_addtime,file_md5,file_type,file_bus_id,file_bus_type)
+		values (#{file_uuid},#{file_name},#{file_length},#{file_status},#{file_path},sysdate,#{file_md5},#{file_type},#{file_bus_id},#{file_bus_type})
+	</insert>
+
+
+	<!-- 通过id查询-->
+	<select id="getFileRecordByFileId" parameterType="String" resultType="SysFileRecord">
+		select
+		a.file_bus_id,
+		a.file_bus_type,
+		a.file_uuid,
+		a.file_name,
+		a.file_length,
+		a.file_status,
+		a.file_addtime,
+		a.file_type ,
+		a.file_path
+		from sys_file_record  a where a.file_uuid=#{file_uuid}
+	</select>
+
+	<!-- 通过id查询-->
+	<select id="getFileRecordListByFileId" parameterType="SysFileRecord" resultType="SysFileRecord">
+		select
+		a.file_bus_id,
+		a.file_uuid,
+		a.file_name,
+		a.file_length,
+		a.file_status,
+		a.file_addtime,
+		a.file_type,
+		a.file_path,
+		(select aaa103 from v_aa10 t where t.aaa100='FILE_BUS_TYPE' and aaa102=a.file_bus_type) file_bus_type
+		from sys_file_record  a where  a.file_bus_id=#{file_bus_id}
+		<if test="file_bus_type!=null">
+			and a.file_bus_type =#{file_bus_type}
+		</if>
+		order by file_addtime desc
+	</select>
+
+
+	<!-- 通过bus_uuid删除文件记录 -->
+	<delete id="deleteFileByFileId" parameterType="String" >
+		delete from sys_file_record t where t.file_uuid=#{file_uuid}
+	</delete>
+
+	<!-- 批量删除 -->
+	<delete id="batDeleteData"  parameterType="String" >
+		delete from sys_file_record where file_uuid in
+		<foreach item="selectnodes" collection="array" open="(" separator="," close=")">
+			#{selectnodes}
+		</foreach>
+	</delete>
+
+	<!-- 通过文件id数组更新业务id及业务状态为有效状态 -->
+	<update id="batupdateBusIdByBusUuidArray" >
+		update sys_file_record  t set t.file_bus_id=#{file_bus_id},t.bus_status='1'   where file_uuid in
+		<foreach item="file_uuid" collection="bus_uuids"   index="index" open="(" separator="," close=")">
+			#{file_uuid}
+		</foreach>
+	</update>
+
+
+	<!-- 保存excel上传记录状态表 -->
+	<insert id="saveExelBatch"  parameterType="SysExcelBatch">
+		insert into sys_excel_batch(
+		excel_batch_id,
+		excel_batch_number,
+		excel_batch_begin_time,
+		excel_batch_status,
+		excel_batch_file_path,
+		excel_batch_file_name,
+		excel_batch_file_length,
+		excel_batch_excel_type,
+		excel_batch_aae011
+		)
+		values (
+		#{excel_batch_id},
+		#{excel_batch_number},
+		#{excel_batch_begin_time,jdbcType=TIMESTAMP},
+		'0',
+		#{excel_batch_file_path},
+		#{excel_batch_file_name},
+		#{excel_batch_file_length},
+		#{excel_batch_excel_type},
+		#{excel_batch_aae011}
+		)
+	</insert>
+
+
+	<!-- 更新上传状态 -->
+	<update id="updateExelBatch" parameterType="SysExcelBatch">
+		update sys_excel_batch
+		<set>
+			excel_batch_end_time=sysdate(),excel_batch_cost=round((sysdate()-excel_batch_begin_time)*24*60*60),
+			<if test="excel_batch_total_count != null">
+				excel_batch_total_count = #{excel_batch_total_count,jdbcType=INTEGER},
+			</if>
+			<if test="excel_batch_rt_code != null">
+				excel_batch_rt_code = #{excel_batch_rt_code,jdbcType=VARCHAR},
+			</if>
+			<if test="excel_batch_rt_msg != null">
+				excel_batch_rt_msg = #{excel_batch_rt_msg,jdbcType=VARCHAR},
+			</if>
+			<if test="excel_batch_error_count != null">
+				excel_batch_error_count = #{excel_batch_error_count,jdbcType=INTEGER},
+			</if>
+			<if test="excel_batch_status != null">
+				excel_batch_status = #{excel_batch_status,jdbcType=VARCHAR},
+			</if>
+			<if test="excel_batch_data_status != null">
+				excel_batch_data_status = #{excel_batch_data_status,jdbcType=INTEGER},
+			</if>
+		</set>
+		where excel_batch_id = #{excel_batch_id,jdbcType=VARCHAR}
+	</update>
+
+
+	<!-- 更新错误文件生成路径及生成状态 -->
+	<update id="updateExelBatchErrorFilePath" parameterType="SysExcelBatch">
+		update sys_excel_batch
+		<set>
+			<if test="excel_error_file_path != null">
+				excel_error_file_path = #{excel_error_file_path,jdbcType=INTEGER},
+			</if>
+			<if test="excel_error_file_download != null">
+				excel_error_file_download = #{excel_error_file_download,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where  excel_batch_number=#{excel_batch_number}
+	</update>
+
+
+	<!-- 通过编号获取批次号 -->
+	<select id="getExcelBatchById"  parameterType="String" resultType="SysExcelBatch">
+		select
+		excel_batch_id,
+		excel_batch_number
+		from sys_excel_batch
+		where excel_batch_id=#{excel_batch_id}
+	</select>
+
+
+	<!--通过批次号获取批次表相关信息 -->
+	<select id="getExcelBatchByNumber"  parameterType="String" resultType="SysExcelBatch">
+		select
+		excel_batch_id,
+		excel_batch_number,
+		excel_batch_file_name,
+		excel_error_file_download,
+		excel_error_file_path
+		from sys_excel_batch
+		where excel_batch_number=#{excel_batch_number}
+	</select>
+
+
+
+	<!-- 分页查询 -->
+	<select id="getExcelBatchList"  parameterType="SysExcelBatch" resultType="SysExcelBatch">
+		select
+		excel_batch_id,
+		excel_batch_number,
+		excel_batch_begin_time excel_batch_begin_time_string,
+		excel_batch_total_count,
+		excel_batch_error_count,
+		excel_batch_cost,
+		excel_batch_status,
+		excel_batch_rt_code,
+		excel_batch_rt_msg,
+		excel_error_file_download,
+		excel_batch_data_status,
+		excel_batch_file_name
+		from sys_excel_batch order by excel_batch_number desc
+	</select>
+
+
+	<!-- 通过批次号删除批次信息 -->
+	<delete id="deleteExcelBatchByNumber"  parameterType="String">
+		delete from sys_excel_batch t where t.excel_batch_number=#{excel_batch_number}
+	</delete>
+
+	<!-- 获取excel文件上传业务类型信息 -->
+	<select id="getExcelFileTypeInfo" resultType="SysExcelType" parameterType="String">
+		SELECT
+		a.businesstype,
+		a.typename,
+		a.vsbeanname,
+		a.mincolumns
+		FROM
+		sys_exceltype a
+		WHERE
+		a.businesstype = #{businesstype}
+	</select>
+</mapper>

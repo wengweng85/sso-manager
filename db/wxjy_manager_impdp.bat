@@ -1,0 +1,1 @@
+impdp wxjy_manager/wxjy_manager directory=dump_dir dumpfile=wxjy_manager.DMP

@@ -1,0 +1,473 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.insigma.mvc.dao.sercatalogue.SER_MGMT_001_001.SerCatalogueConfigMapper" >
+  
+  <!-- 基本sql -->
+  <sql id="base_sql">
+      select 
+        event_type_id,
+		bus_area_code,
+		event_type_code,
+		event_type_name,
+		event_type_sort,
+		event_type_pingyin,
+		event_type_desc,
+		userid,
+		groupid,
+		createtime,
+		edituserid,
+		editgroupid,
+		edittime,
+		status,
+		parent_event_type_id
+	from
+		ser_event_type
+  </sql>
+  
+  <!-- 获取所有的事项类型 -->
+  <select id="getAllEventTypeList"  resultType="ServiceEventType">
+     select
+	     event_type_id,
+	     event_type_name,
+	     event_type_code,
+	     event_type_sort,
+		 event_type_pingyin,
+		 event_type_desc
+     from
+     ser_event_type order by event_type_sort
+  </select>
+  
+  <!-- 新增事项类型配置 -->
+  <insert id="saveEventType" parameterType="ServiceEventType">
+       <selectKey resultType="java.lang.String" order="BEFORE" keyProperty="event_type_id"> 
+            select uuid()
+        </selectKey>
+	      insert into ser_event_type(
+	        event_type_id,
+			bus_area_code,
+			event_type_code,
+			event_type_name,
+			event_type_sort,
+			event_type_pingyin,
+			event_type_desc,
+			userid,
+			groupid,
+			createtime,
+			status,
+			parent_event_type_id
+	      )
+	      values (
+            #{event_type_id},
+			#{bus_area_code},
+			#{event_type_code},
+			#{event_type_name},
+			#{event_type_sort},
+			#{event_type_pingyin},
+			#{event_type_desc},
+			#{userid},
+			#{groupid},
+			sysdate(),
+			'1',
+			'0'
+	      )
+  </insert>
+  
+  <!-- 更新事项类型 -->
+  <update id="updateEventType" parameterType="ServiceEventType">
+        update ser_event_type t
+		  <set>
+		      t.edittime=sysdate(),
+		      t.edituserid=#{edituserid},
+			  t.editgroupid=#{editgroupid},
+	      <if test="event_type_name != null and event_type_name !=''">t.event_type_name=#{event_type_name},</if>
+	      <if test="event_type_code != null and event_type_code !=''">t.event_type_code=#{event_type_code},</if>
+	      <if test="event_type_desc != null and event_type_desc !=''">t.event_type_desc=#{event_type_desc}</if>
+	    </set>
+        where t.event_type_id=#{event_type_id}
+  </update>
+  
+  <!-- 通过编号获取事项明细 -->
+  <select id="getEventTypeById" parameterType="String" resultType="ServiceEventType">
+         <include refid="base_sql"></include>
+		 where  event_type_id=#{event_type_id}   	
+  </select>
+  
+  <!-- 通过编码类型获取事项明细   -->
+  <select id="getEventTypeByCode" parameterType="String" resultType="ServiceEventType">
+         <include refid="base_sql"></include>
+		 where  event_type_code=#{event_type_code} 
+  </select>
+  
+  <!-- 删除事项类型 -->
+  <delete id="deleteEventTypeByid" parameterType="String">
+        delete from ser_event_type  where event_type_id=#{event_type_id}
+  </delete>
+  
+  
+  <!-- 基本sql -->
+  <sql id="department_base_sql">
+      select 
+        department_id,
+		department_address,
+		department_longitude,
+		department_latitude,
+		department_tel,
+		department_linkman,
+		userid,
+		createtime,
+		status,
+		department_name,
+		department_img_type,
+		groupid,
+		department_route,
+		department_work_time,
+		department_img,
+		department_name_abb
+	  from
+		ser_department
+  </sql>
+  
+  <!-- 获取所有的事项类型 -->
+  <select id="getAllDepartmentList"  resultType="ServiceDepartment">
+     select
+	    department_id,
+	    department_name,
+		department_address,
+		department_longitude,
+		department_latitude,
+		department_tel,
+		department_linkman
+     from
+     ser_department 
+  </select>
+  
+  <!-- 新增事项类型配置 -->
+  <insert id="saveDepartment" parameterType="ServiceDepartment">
+       <selectKey resultType="java.lang.String" order="BEFORE" keyProperty="department_id"> 
+            select uuid()
+        </selectKey>
+	      insert into ser_department(
+	            department_id,
+	            department_name,
+				department_address,
+				department_longitude,
+				department_latitude,
+				department_tel,
+				department_linkman,
+				userid,
+				createtime,
+				status
+	      )
+	      values (
+                #{department_id},
+                #{department_name},
+				#{department_address},
+				#{department_longitude},
+				#{department_latitude},
+				#{department_tel},
+				#{department_linkman},
+				#{userid},
+				sysdate(),
+				'1'
+	      )
+  </insert>
+  
+  <!-- 更新事项类型 -->
+  <update id="updateDepartment" parameterType="ServiceDepartment">
+        update ser_department t
+		  <set>
+		      <if test="department_name != null and department_name !=''">t.department_name=#{department_name},</if>
+		      <if test="department_address != null and department_address !=''">t.department_address=#{department_address},</if>
+		      <if test="department_linkman != null and department_linkman !=''">t.department_linkman=#{department_linkman},</if>
+		      <if test="department_tel != null and department_tel !=''">t.department_tel=#{department_tel}</if>
+	      </set>
+        where t.department_id=#{department_id}
+  </update>
+  
+  <!-- 通过编号获取事项明细 -->
+  <select id="getDepartmentById" parameterType="String" resultType="ServiceDepartment">
+         <include refid="department_base_sql"></include>
+		 where  department_id=#{department_id}   	
+  </select>
+  
+  
+  <!-- 删除事项类型 -->
+  <delete id="deleteDepartmentByid" parameterType="String">
+        delete from ser_department  where department_id=#{department_id}
+  </delete>
+  
+  
+  
+  <!-- bus_type 基本sql -->
+  <sql id="bus_type_base_sql">
+      select 
+        bus_type_id,
+		bus_area_code,
+		bus_type_code,
+		bus_type_name,
+		bus_type_sort,
+		bus_type_pingyin,
+		bus_type_desc,
+		bus_type_bigimgtype,
+		bus_type_smalltype,
+		userid,
+		groupid,
+		createtime,
+		edituserid,
+		editgroupid,
+		edittime,
+		status,
+		parent_bus_type_id,
+		bus_type_bigimg,
+		bus_type_smallimg
+	  from
+		ser_bus_type
+  </sql>
+  
+  <!-- 获取所有的事项类型 -->
+  <select id="getAllBustypeList"  resultType="ServiceBusType">
+     <include refid="bus_type_base_sql"></include>
+     order by bus_type_sort
+  </select>
+  
+  <!-- 新增事项类型配置 -->
+  <insert id="saveBustype" parameterType="ServiceBusType">
+       <selectKey resultType="java.lang.String" order="BEFORE" keyProperty="bus_type_id"> 
+            select uuid()
+        </selectKey>
+	      insert into ser_bus_type(
+                bus_type_id,
+				bus_area_code,
+				bus_type_code,
+				bus_type_name,
+				bus_type_sort,
+				bus_type_pingyin,
+				bus_type_desc,
+				bus_type_bigimgtype,
+				bus_type_smalltype,
+				userid,
+				groupid,
+				createtime,
+				status
+	      )
+	      values (
+                bus_type_id,
+				bus_area_code,
+				bus_type_code,
+				bus_type_name,
+				bus_type_sort,
+				bus_type_pingyin,
+				bus_type_desc,
+				bus_type_bigimgtype,
+				bus_type_smalltype,
+				userid,
+				groupid,
+				sysdate(),
+				'1'
+	      )
+  </insert>
+  
+  <!-- 更新事项类型 -->
+  <update id="updateBustype" parameterType="ServiceBusType">
+        update ser_bus_type t
+		  <set>
+		      <if test="bus_type_name != null and bus_type_name !=''">t.bus_type_name=#{bus_type_name},</if>
+		      <if test="bus_type_code != null and bus_type_code !=''">t.bus_type_code=#{bus_type_code},</if>
+		      <if test="bus_type_desc != null and bus_type_desc !=''">t.bus_type_desc=#{bus_type_desc},</if>
+		      <if test="bus_type_sort != null and bus_type_sort !=''">t.bus_type_sort=#{bus_type_sort}</if>
+	      </set>
+        where t.bus_type_id=#{bus_type_id}
+  </update>
+  
+  <!-- 通过编号获取事项明细 -->
+  <select id="getBustypeById" parameterType="String" resultType="ServiceBusType">
+         <include refid="bus_type_base_sql"></include>
+		 where  bus_type_id=#{bus_type_id}   	
+  </select>
+  
+  
+  <!-- 删除事项类型 -->
+  <delete id="deleteBustypeByid" parameterType="String">
+        delete from ser_bus_type  where bus_type_id=#{bus_type_id}
+  </delete>
+  
+  
+  
+  <!-- consumer_type 基本sql -->
+  <sql id="consumer_type_base_sql">
+      select 
+        consumer_type_id,
+		bus_area_code,
+		consumer_type_code,
+		consumer_type_name,
+		consumer_type_sort,
+		consumer_type_pingyin,
+		consumer_type_desc,
+		consumer_type_bigimgtype,
+		consumer_type_smalltype,
+		userid,
+		groupid,
+		createtime,
+		edituserid,
+		editgroupid,
+		edittime,
+		status,
+		consumer_type_bigimg,
+		consumer_type_smallimg
+	  from
+		ser_consumer_type
+  </sql>
+  
+  <!-- 获取所有的事项类型 -->
+  <select id="getAllConsumertypeList"  resultType="ServiceConsumerType">
+     <include refid="consumer_type_base_sql"></include>
+     order by consumer_type_sort
+  </select>
+  
+  <!-- 新增事项类型配置 -->
+  <insert id="saveConsumertype" parameterType="ServiceConsumerType">
+       <selectKey resultType="java.lang.String" order="BEFORE" keyProperty="consumer_type_id"> 
+            select uuid()
+        </selectKey>
+	      insert into ser_consumer_type(
+                consumer_type_id,
+				bus_area_code,
+				consumer_type_code,
+				consumer_type_name,
+				consumer_type_sort,
+				consumer_type_pingyin,
+				consumer_type_desc,
+				userid,
+				groupid,
+				createtime,
+				status
+	      )
+	      values (
+                #{consumer_type_id},
+				#{bus_area_code},
+				#{consumer_type_code},
+				#{consumer_type_name},
+				#{consumer_type_sort},
+				#{consumer_type_pingyin},
+				#{consumer_type_desc},
+				#{userid},
+				#{groupid},
+				sysdate(),
+				'1'
+	      )
+  </insert>
+  
+  <!-- 更新事项类型 -->
+  <update id="updateConsumertype" parameterType="ServiceConsumerType">
+        update ser_consumer_type t
+		  <set>
+		      <if test="consumer_type_name != null and consumer_type_name !=''">t.consumer_type_name=#{consumer_type_name},</if>
+		      <if test="consumer_type_code != null and consumer_type_code !=''">t.consumer_type_code=#{consumer_type_code},</if>
+		      <if test="consumer_type_desc != null and consumer_type_desc !=''">t.consumer_type_desc=#{consumer_type_desc},</if>
+		      <if test="consumer_type_sort != null and consumer_type_sort !=''">t.consumer_type_sort=#{consumer_type_sort}</if>
+	      </set>
+        where t.consumer_type_id=#{consumer_type_id}
+  </update>
+  
+  <!-- 通过编号获取事项明细 -->
+  <select id="getConsumertypeById" parameterType="String" resultType="ServiceConsumerType">
+         <include refid="consumer_type_base_sql"></include>
+		 where  consumer_type_id=#{consumer_type_id}   	
+  </select>
+  
+  
+  <!-- 删除事项类型 -->
+  <delete id="deleteConsumertypeByid" parameterType="String">
+        delete from ser_consumer_type  where consumer_type_id=#{consumer_type_id}
+  </delete>
+  
+  
+  
+  <!-- power_type 基本sql -->
+  <sql id="power_type_base_sql">
+      select 
+        power_type_id,
+		bus_area_code,
+		power_type_code,
+		power_type_name,
+		power_type_sort,
+		power_type_pingyin,
+		power_type_desc,
+		power_type_bigimgtype,
+		power_type_smalltype,
+		userid,
+		groupid,
+		createtime,
+		edituserid,
+		editgroupid,
+		edittime,
+		status,
+		power_type_bigimg,
+		power_type_smallimg
+	  from
+		ser_power_type
+  </sql>
+  
+  <!-- 获取所有的事项类型 -->
+  <select id="getAllPowertypeList"  resultType="ServicePowerType">
+     <include refid="power_type_base_sql"></include>
+     order by power_type_sort
+  </select>
+  
+  <!-- 新增事项类型配置 -->
+  <insert id="savePowertype" parameterType="ServicePowerType">
+       <selectKey resultType="java.lang.String" order="BEFORE" keyProperty="power_type_id"> 
+            select uuid()
+        </selectKey>
+	      insert into ser_power_type(
+                power_type_id,
+				bus_area_code,
+				power_type_code,
+				power_type_name,
+				power_type_sort,
+				power_type_pingyin,
+				power_type_desc,
+				userid,
+				groupid,
+				createtime,
+				status
+	      )
+	      values (
+                #{power_type_id},
+				#{bus_area_code},
+				#{power_type_code},
+				#{power_type_name},
+				#{power_type_sort},
+				#{power_type_pingyin},
+				#{power_type_desc},
+				#{userid},
+				#{groupid},
+				sysdate(),
+				'1'
+	      )
+  </insert>
+  
+  <!-- 更新事项类型 -->
+  <update id="updatePowertype" parameterType="ServicePowerType">
+        update ser_power_type t
+		  <set>
+		      <if test="power_type_name != null and power_type_name !=''">t.power_type_name=#{power_type_name},</if>
+		      <if test="power_type_code != null and power_type_code !=''">t.power_type_code=#{power_type_code},</if>
+		      <if test="power_type_desc != null and power_type_desc !=''">t.power_type_desc=#{power_type_desc},</if>
+		      <if test="power_type_sort != null and power_type_sort !=''">t.power_type_sort=#{power_type_sort}</if>
+	      </set>
+        where t.power_type_id=#{power_type_id}
+  </update>
+  
+  <!-- 通过编号获取事项明细 -->
+  <select id="getPowertypeById" parameterType="String" resultType="ServicePowerType">
+         <include refid="power_type_base_sql"></include>
+		 where  power_type_id=#{power_type_id}   	
+  </select>
+  
+  
+  <!-- 删除事项类型 -->
+  <delete id="deletePowertypeByid" parameterType="String">
+        delete from ser_power_type  where power_type_id=#{power_type_id}
+  </delete>
+</mapper>

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.insigma.mvc.dao.api.API_LOG_001_001.ApiLogQueryMapper">
+	<!-- 查询日志列表 -->
+	<select id="queryLogList" parameterType="SLog" resultType="SLog">
+	    select t.logid, date_format(logtime,'%Y-%m-%d %H:%i:%S') logtime_string,t.cost,t.usergent,t.url,t.userid,t.method  from s_log  t order by logtime desc 
+	</select>
+	
+	<!-- 通过日志编号查询日志详情 -->
+	<select id="queryLogById" parameterType="String" resultType="SLog">
+		select 
+			t.logid, 
+			date_format(logtime,'%Y-%m-%d %H:%i:%S') logtime_string,
+			t.cost,t.usergent,
+			t.url,
+			t.userid,
+			t.method,
+			t.cookie,
+			t.queryparam,
+			t.message,
+			t.exceptiontype,
+			t.stackmsg
+		from s_log  t where t.logid=#{logid}
+	</select>
+	
+	<!-- 查询应用异常日志记录 -->
+	<select id="queryErrorLogList" parameterType="SErrorLog" resultType="SErrorLog">
+		select 
+			t.logid,
+			date_format(logtime,'%Y-%m-%d %H:%i:%S') logtime_string,
+			t.message,
+			t.usergent,
+			t.url,
+		    t.exceptiontype 
+		from s_errorlog  t 
+		order by logtime desc 
+	</select>
+	
+	
+	<!-- 通过日志编号查询日志详情 -->
+	<select id="queryErrorLogById" parameterType="String" resultType="SErrorLog">
+		select
+			t.logid,
+			date_format(logtime,'%Y-%m-%d %H:%i:%S') logtime_string,
+			t.message,
+			t.usergent,
+			t.url,
+		    t.exceptiontype,
+		    t.stackmsg  
+		from s_errorlog  t where  t.logid=#{logid}
+	</select>
+
+	<!-- 查询应用异常日志记录 -->
+	<select id="querySysErrorLogList" parameterType="SErrorLog" resultType="SErrorLog">
+		select
+		t.logid,
+		date_format(logtime,'%Y-%m-%d %H:%i:%S') logtime_string,
+		t.message,
+		t.usergent,
+		t.url,
+		t.exceptiontype
+		from s_errorlog  t
+		order by logtime desc
+	</select>
+
+
+	<!-- 通过日志编号查询日志详情 -->
+	<select id="querySysErrorLogById" parameterType="String" resultType="SErrorLog">
+		select
+		t.logid,
+		date_format(logtime,'%Y-%m-%d %H:%i:%S') logtime_string,
+		t.message,
+		t.usergent,
+		t.url,
+		t.exceptiontype,
+		t.stackmsg
+		from s_errorlog  t where  t.logid=#{logid}
+	</select>
+</mapper>
