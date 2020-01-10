@@ -1,25 +1,29 @@
 package com.insigma.mvc.serviceimp.sysmanager.log;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.util.HashMap;
+import java.util.List;
+
+import javax.annotation.Resource;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.insigma.common.util.IPUtil;
 import com.insigma.mvc.MvcHelper;
 import com.insigma.mvc.dao.sysmanager.log.SysLogMapper;
+import com.insigma.mvc.jpa.dao.log.SysLogDao;
 import com.insigma.mvc.model.SysErrorLog;
 import com.insigma.mvc.model.SysLog;
 import com.insigma.mvc.service.sysmanager.log.SysLogService;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import javax.annotation.Resource;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.util.HashMap;
-import java.util.List;
 
 /**
  * 
@@ -36,18 +40,19 @@ public class SysLogServiceImpl extends MvcHelper implements SysLogService {
 	@Resource
 	private SysLogMapper logMapper;
 	
-	//@Resource
-	//private SysLogDao sysLogDao;
+	@Resource
+	private SysLogDao sysLogDao;
 
 	/*@Override
 	@Transactional
 	public String saveLogInfo(SysLog syslog){
-		SysLog newsyslog=logMapper.sysLogDao(syslog);
+		SysLog newsyslog=sysLogDao.save(syslog);
 		return newsyslog.getLogid();
 	}*/
 
 	@Override
 	@Transactional
+	@Async
 	public String saveLogInfo(SysLog syslog){
 		logMapper.saveLogInfo(syslog);
 		return syslog.getLogid();

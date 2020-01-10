@@ -45,9 +45,7 @@ public class SysLog  extends PageInfo implements java.io.Serializable{
     @Lob
     private String responsemsg ;//	返回信息
     private String token;//请求jwt状态码
-    
-    
-    
+
 	public String getLogtime_string() {
 		return logtime_string;
 	}

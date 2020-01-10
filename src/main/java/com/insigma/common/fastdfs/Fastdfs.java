@@ -19,7 +19,6 @@ import org.csource.fastdfs.TrackerServer;
 public class Fastdfs{
 
 	private static  Fastdfs fastdfs;
-
 	private static TrackerClient trackerClient = null;
 	private static TrackerServer trackerServer = null;
 	private static StorageClient storageClient= null;

@@ -4,7 +4,7 @@
 <mapper namespace="com.insigma.mvc.dao.api.API_LOG_001_001.ApiLogQueryMapper">
 	<!-- 查询日志列表 -->
 	<select id="queryLogList" parameterType="SLog" resultType="SLog">
-	    select t.logid, to_char(logtime,'yyyy-MM-dd HH:mm:ss') logtime_string,t.cost,t.usergent,t.url,t.userid,t.method  from s_log  t order by logtime desc 
+	      select t.logid, to_char(logtime,'yyyy-MM-dd HH:mm:ss') logtime_string,t.cost,t.usergent,t.url,t.userid,t.method  from s_log  t order by logtime desc
 	</select>
 	
 	<!-- 通过日志编号查询日志详情 -->

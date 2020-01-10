@@ -11,7 +11,6 @@ package com.insigma.dto;
 public class AjaxReturnMsg<T> implements java.io.Serializable {
 
     private static final long serialVersionUID = 1L;
-
     private int syscode; // 系统返回状态码,默认200
     private boolean success; // 业务状态码，默认为true
     private String message = ""; // 业务状态中文说明
