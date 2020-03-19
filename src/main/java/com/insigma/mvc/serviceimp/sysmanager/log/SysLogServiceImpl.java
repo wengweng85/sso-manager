@@ -40,8 +40,8 @@ public class SysLogServiceImpl extends MvcHelper implements SysLogService {
 	@Resource
 	private SysLogMapper logMapper;
 	
-	@Resource
-	private SysLogDao sysLogDao;
+	//@Resource
+	//private SysLogDao sysLogDao;
 
 	/*@Override
 	@Transactional

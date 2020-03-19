@@ -11,24 +11,24 @@ import java.util.Date;
  * @author admin
  *
  */
-@Table(name="sys_log")//默认情况下可以不写表名与持久化类名相同
-@Entity //表明这是一个持久化类
+//@Table(name="sys_log")//默认情况下可以不写表名与持久化类名相同
+//@Entity //表明这是一个持久化类
 public class SysLog  extends PageInfo implements java.io.Serializable{
-	@GeneratedValue(generator="system-uuid")
-	@GenericGenerator(name="system-uuid",strategy="uuid")
-	@Id //定义数据列
+	//@GeneratedValue(generator="system-uuid")
+	//@GenericGenerator(name="system-uuid",strategy="uuid")
+	//@Id //定义数据列
 	private String logid	;//			日志id
-	@Transient
+	//@Transient
 	private String messagetype;//消息类型
     private String interfacetype	;//			接口类型代码
     private String message	;//		日志标题
 
-	@Temporal(TemporalType.DATE)
+	//@Temporal(TemporalType.DATE)
     private Date logtime	;//		发生时间
-	@Transient
+	//@Transient
     private String logtime_string;//发生时间
     private String cost;//		请求耗费时间
-    @Lob
+    //@Lob
     private String stackmsg	;//		异常栈信息
     private String exceptiontype	;//		异常类型
     private String usergent	;//		user-agent
@@ -38,11 +38,11 @@ public class SysLog  extends PageInfo implements java.io.Serializable{
     private String userid	;//		当前操作人员id
     private String cookie	;//		cookie
     private String appkey	;//		appkey
-    @Lob
+    //@Lob
     private String queryparam	;//		请求参数信息
     private String method	;//		请求方法类型
     private String success	;//	请求是否成功
-    @Lob
+    //@Lob
     private String responsemsg ;//	返回信息
     private String token;//请求jwt状态码
 

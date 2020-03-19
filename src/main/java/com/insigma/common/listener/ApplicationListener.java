@@ -137,28 +137,27 @@ public class ApplicationListener implements   ServletContextListener  {
     		//是否同步标志 如果上一次同步时间是1小时之内，不同步下载代码
     		boolean syn_flag=true;
     		if(syn_flag){
-    			//code_type code_value同步
-    			List <CodeType> list_code_type=sysCodeTypeService.getInitcodetypeList();
-    			
-    			 ExecutorService fixedThreadPool = Executors.newFixedThreadPool(20);  
-                 for(int i = 0; i < list_code_type.size(); i++){  
-                 	 final CodeType codeType = list_code_type.get(i);
-                 	 final String code_type = codeType.getCode_type();  
-                 	 fixedThreadPool.execute(new Runnable() {  
-                 		    public void run() {  
-                 		      log.info("代码类型="+code_type+",当前线程="+Thread.currentThread().getName());  
-             				  List<CodeValue> list_code_value =sysCodeTypeService.getInitCodeValueList(codeType);
-             				  if (list_code_value.size() > 0) {
-             					//将代码参加加载到redis缓存中
-             					try{
-             						//将代码参加加载到ehcache缓存中
-             						EhCacheUtil.getManager().getCache("webcache").put(new Element(code_type,list_code_value));
-		             		        }catch(Exception e){
-		             		        	//e.printStackTrace();
-		             		        }
-             				}
-                 		    }
-             		   });  
-                 }}}
+			 //code_type code_value同步
+			 List <CodeType> list_code_type=sysCodeTypeService.getInitcodetypeList();
+			 ExecutorService fixedThreadPool = Executors.newFixedThreadPool(20);  
+             for(int i = 0; i < list_code_type.size(); i++){  
+             	 final CodeType codeType = list_code_type.get(i);
+             	 final String code_type = codeType.getCode_type();  
+             	 fixedThreadPool.execute(new Runnable() {  
+             		    public void run() {  
+             		      log.info("代码类型="+code_type+",当前线程="+Thread.currentThread().getName());  
+         				  List<CodeValue> list_code_value =sysCodeTypeService.getInitCodeValueList(codeType);
+         				  if (list_code_value.size() > 0) {
+         					//将代码参加加载到redis缓存中
+         					try{
+         						//将代码参加加载到ehcache缓存中
+         						EhCacheUtil.getManager().getCache("webcache").put(new Element(code_type,list_code_value));
+	             		        }catch(Exception e){
+	             		        	//e.printStackTrace();
+	             		        }
+         				}
+             		    }
+         		   });  
+             }}}
 	}
 }
